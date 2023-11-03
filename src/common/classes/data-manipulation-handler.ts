@@ -1,15 +1,15 @@
 import { Request } from 'express'
 
-export abstract class DataManipulationHandler<T extends Request, D extends object> {
-  private readonly next: DataManipulationHandler<T, D>
+export abstract class DataManipulationHandler<T extends object> {
+  private readonly next: DataManipulationHandler<T>
 
-  protected constructor(next: DataManipulationHandler<T, D>) {
+  protected constructor(next: DataManipulationHandler<T>) {
     this.next = next
   }
 
-  abstract doHandle(request: T, queryArgs: D): boolean
+  abstract doHandle(request: Request, queryArgs: T): boolean
 
-  handle(request: T, queryArgs: D): boolean {
+  handle(request: Request, queryArgs: T): boolean {
     if (this.doHandle(request, queryArgs)) {
       return
     }

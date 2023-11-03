@@ -6,20 +6,20 @@ import { DataManipulationHandler } from 'common/classes/data-manipulation-handle
 // Call the handle method to start the pipeline
 // Call the getQueryArgs method to get the query arguments
 
-export class DataPipeline<T extends Request, D extends object> {
-  private readonly handler: DataManipulationHandler<T, D>
-  private queryArgs: D
+export class DataPipeline<T extends object> {
+  private readonly handler: DataManipulationHandler<T>
+  private queryArgs: T
 
-  public constructor(handler: DataManipulationHandler<T, D>) {
+  public constructor(handler: DataManipulationHandler<T>) {
     this.handler = handler
-    this.queryArgs = {} as D
+    this.queryArgs = {} as T
   }
 
-  public handle(request: T) {
+  public handle(request: Request) {
     this.handler.handle(request, this.queryArgs)
   }
 
-  public getQueryArgs(): D {
+  public getQueryArgs(): T {
     return this.queryArgs
   }
 }

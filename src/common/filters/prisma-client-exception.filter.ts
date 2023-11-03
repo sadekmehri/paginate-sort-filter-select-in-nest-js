@@ -1,5 +1,6 @@
 import { Catch, ArgumentsHost, ExceptionFilter, HttpStatus } from '@nestjs/common'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import { DATABSE_ERROR_MESSAGE } from 'common/constants/error-message'
 import { StatusCodes } from 'common/constants/status-codes'
 import { toGmtTimestamp } from 'common/utils/date.util'
 import { Response } from 'express'
@@ -16,7 +17,7 @@ export class PrismaClientExceptionFilter implements ExceptionFilter {
 
     response.status(status).json({
       status: StatusCodes[status],
-      message: 'Something went wrong. Please try again later.',
+      message: DATABSE_ERROR_MESSAGE,
       timestamp: gmtTimestamp,
       path: request.url,
     })
