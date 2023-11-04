@@ -1,29 +1,25 @@
 import { Injectable } from '@nestjs/common'
-import { IUserDataAccessor } from 'common/interfaces'
-import { Request } from 'express'
-import { PrismaService } from 'prisma/Prisma.service'
 import { DataPipeline } from 'common/classes/data-pipeline'
-import { Prisma } from '@prisma/client'
-import { PaginatePrismaHandler } from 'prisma/handler/paginate-prisma.handler'
-import { SelectFieldPrismaHandler } from 'prisma/handler/select-fileds-prisma.handler'
-import { SelectableFields, User } from 'common/types'
+import { IUserDataAccessor } from 'common/interfaces'
+import { BooleanMap, User } from 'common/types'
+import { PrismaService } from 'prisma/Prisma.service'
+import { PaginatePrismaHandler, SortPrismaHandler, SelectPrismaHandler } from 'prisma/handler'
+import { UserFindManyArgs } from 'prisma/types'
+import { Request } from 'express'
+import { selectableUserFields, sortableUserFields } from '../config'
 
 @Injectable()
 export class PrismaUserRepository implements IUserDataAccessor {
   private readonly prisma: PrismaService
-  private readonly dataPipeline: DataPipeline<Prisma.UserFindManyArgs>
-  private readonly selectableUserFields: SelectableFields<User> = {
-    id: true,
-    name: true,
-    age: true,
-    isActive: true,
-  }
+  private readonly dataPipeline: DataPipeline<UserFindManyArgs>
 
+  // prettier-ignore
   constructor(prismaService: PrismaService) {
     this.prisma = prismaService
-    const paginateUserHandler = new PaginatePrismaHandler<Prisma.UserFindManyArgs>(null)
-    const selectFieldUserHandler = new SelectFieldPrismaHandler<Prisma.UserFindManyArgs, SelectableFields<User>>(this.selectableUserFields, paginateUserHandler)
-    this.dataPipeline = new DataPipeline(selectFieldUserHandler)
+    const paginateUserHandler = new PaginatePrismaHandler<UserFindManyArgs>(null)
+    const sortUserHandler = new SortPrismaHandler<UserFindManyArgs, BooleanMap<User>>(sortableUserFields,paginateUserHandler)
+    const selectUserHandler = new SelectPrismaHandler<UserFindManyArgs, BooleanMap<User>>(selectableUserFields, sortUserHandler)
+    this.dataPipeline = new DataPipeline(selectUserHandler)
   }
 
   getUsers(request: Request): any {

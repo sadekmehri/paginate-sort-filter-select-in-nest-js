@@ -1,7 +1,7 @@
 import { DataManipulationHandler } from 'common/classes/data-manipulation-handler'
 import { Request } from 'express'
 
-export class SelectFieldPrismaHandler<T extends object, D> extends DataManipulationHandler<T> {
+export class SelectPrismaHandler<T extends object, D> extends DataManipulationHandler<T> {
   private readonly selectableFields: D
   constructor(selectableFields: D, next: DataManipulationHandler<T>) {
     super(next)
@@ -27,6 +27,7 @@ export class SelectFieldPrismaHandler<T extends object, D> extends DataManipulat
     const selectableFieldsObjectResult = isInvalidSelectFieldsObject
       ? defaultSelectCriterias
       : fieldsObject
+
     return selectableFieldsObjectResult
   }
 
