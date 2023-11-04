@@ -1,3 +1,4 @@
+// prettier-ignore
 {
   "compilerOptions": {
     "module": "commonjs",
@@ -24,21 +25,11 @@
     "noUnusedParameters": false,
     "allowJs": false,
     "paths": {
-      "*": [
-        "./*"
-      ],
-      "src/*": [
-        "src/*"
-      ],
-      "test/*": [
-        "test/*"
-      ],
-      "common": [
-        "src/common/*"
-      ],
-      "prisma": [
-        "src/prisma/*"
-      ]
+      "*": ["./*"],
+      "src/*": ["src/*"],
+      "test/*": ["test/*"],
+      "common": ["src/common/*"],
+      "prisma": ["src/prisma/*"]
     }
   }
 }
