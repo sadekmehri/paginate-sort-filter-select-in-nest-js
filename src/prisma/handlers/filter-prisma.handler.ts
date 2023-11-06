@@ -1,5 +1,6 @@
 import { DataManipulationHandler } from 'common/classes/data-manipulation-handler'
 import { PrismaFilterRequestTransformer } from 'common/classes/prisma-filter-request-transformer'
+import { FILTER_BY } from 'common/constants/request-query-params'
 import { Request } from 'express'
 
 export class FilterPrismaHandler<
@@ -16,7 +17,7 @@ export class FilterPrismaHandler<
   }
 
   doHandle(request: Request, queryArgs: T): boolean {
-    const filterByTerm = (request.query.filter_by as string) || ''
+    const filterByTerm = (request.query[FILTER_BY] as string) || ''
     const filterCriteriaObject = this.prismaFilterRequestTransformer.transform(filterByTerm)
 
     // Add filter criteria to query args

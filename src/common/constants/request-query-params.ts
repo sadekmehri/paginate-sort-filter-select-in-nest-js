@@ -1,0 +1,5 @@
+export const SORT_BY = 'sort_by'
+export const FILTER_BY = 'filter_by'
+export const PAGE = 'page'
+export const LIMIT = 'limit'
+export const FIELDS = 'fields'

@@ -1,4 +1,5 @@
 import { DataManipulationHandler } from 'common/classes/data-manipulation-handler'
+import { FIELDS } from 'common/constants/request-query-params'
 import { Request } from 'express'
 
 export class SelectPrismaHandler<T extends object, D> extends DataManipulationHandler<T> {
@@ -32,7 +33,7 @@ export class SelectPrismaHandler<T extends object, D> extends DataManipulationHa
   }
 
   doHandle(request: Request, queryArgs: T): boolean {
-    const selectedFieldsTerm = (request.query.fields as string) || ''
+    const selectedFieldsTerm = (request.query[FIELDS] as string) || ''
 
     const selectableFieldsObjectResult = this.getSelectedFieldsObject<D>(
       selectedFieldsTerm,

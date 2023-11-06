@@ -117,11 +117,6 @@ export class PrismaFilterRequestTransformer<T> {
       ? LOOSE_COMPARISON_FILTER_PRISMA
       : operatorPrismaMap[operator]
 
-      console.log(comparator)
-      console.log(field)
-      console.log(value)
-      console.log(type)
-      
     // Fill filter criteria
     const filterCriteria = {
       [field]: {

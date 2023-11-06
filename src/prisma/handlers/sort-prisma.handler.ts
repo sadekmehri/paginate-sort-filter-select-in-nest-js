@@ -1,4 +1,5 @@
 import { DataManipulationHandler } from 'common/classes/data-manipulation-handler'
+import { SORT_BY } from 'common/constants/request-query-params'
 import { Request } from 'express'
 
 export class SortPrismaHandler<T extends object, D> extends DataManipulationHandler<T> {
@@ -13,6 +14,7 @@ export class SortPrismaHandler<T extends object, D> extends DataManipulationHand
     const defaultSortByCriterias = [{ id: 'desc' }]
 
     const sortByCriterias = decodeURIComponent(sortBy)
+      .replace(/ /g, '+')
       .split(',')
       .map((sort) => {
         const isDescendingOrder = sort.startsWith('-')
@@ -36,7 +38,7 @@ export class SortPrismaHandler<T extends object, D> extends DataManipulationHand
   }
 
   doHandle(request: Request, queryArgs: T): boolean {
-    const sortByTerm = (request.query.sort_by as string) || ''
+    const sortByTerm = (request.query[SORT_BY] as string) || ''
 
     const sortByCriterias = this.getSortByCriterias(sortByTerm)
     queryArgs['orderBy'] = sortByCriterias
