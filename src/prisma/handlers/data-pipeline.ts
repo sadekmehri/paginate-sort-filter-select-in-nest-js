@@ -1,8 +1,8 @@
 import { Request } from 'express'
-import { DataManipulationHandler } from 'common/classes/data-manipulation-handler'
+import { DataManipulationHandler } from 'prisma/handlers'
 
 // This class is used to handle the data pipeline for the repository
-// For example select fields -> filter -> sort -> paginate
+// For example select fields -> filter -> sort
 // Call the handle method to start the pipeline
 // Call the getQueryArgs method to get the query arguments
 

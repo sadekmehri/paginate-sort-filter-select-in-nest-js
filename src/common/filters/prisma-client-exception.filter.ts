@@ -1,11 +1,14 @@
 import { Catch, ArgumentsHost, ExceptionFilter, HttpStatus } from '@nestjs/common'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+} from '@prisma/client/runtime/library'
 import { DATABSE_ERROR_MESSAGE } from 'common/constants/error-message'
 import { StatusCodes } from 'common/constants/status-codes'
 import { toGmtTimestamp } from 'common/utils/date.util'
 import { Response } from 'express'
 
-@Catch(PrismaClientKnownRequestError)
+@Catch(PrismaClientKnownRequestError, PrismaClientUnknownRequestError)
 export class PrismaClientExceptionFilter implements ExceptionFilter {
   catch(_exception: PrismaClientKnownRequestError, host: ArgumentsHost) {
     const ctx = host.switchToHttp()

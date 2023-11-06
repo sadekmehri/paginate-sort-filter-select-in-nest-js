@@ -1,22 +1,36 @@
-import { DataManipulationHandler } from 'common/classes/data-manipulation-handler'
+import { FIELDS } from 'common/constants/request-query-params'
+import { FilterConstraintsRecord } from 'common/types'
 import { Request } from 'express'
+import { DataManipulationHandler } from './data-manipulation-handler'
 
 export class SelectPrismaHandler<T extends object, D> extends DataManipulationHandler<T> {
-  private readonly selectableFields: D
-  constructor(selectableFields: D, next: DataManipulationHandler<T>) {
+  private readonly constraintRecord: FilterConstraintsRecord<D>
+
+  constructor(constraintRecord: FilterConstraintsRecord<D>, next: DataManipulationHandler<T>) {
     super(next)
-    this.selectableFields = selectableFields
+    this.constraintRecord = constraintRecord
+    this.constraintRecord = constraintRecord
   }
 
-  private getSelectedFieldsObject<V>(
-    selectedFieldsTerm: string,
-    selectableFields: V,
-    defaultSelectCriterias: V,
-  ) {
+  private getDefaultSelectCriterias() {
+    const selectableField: Partial<Record<keyof FilterConstraintsRecord<D>, boolean>> = {}
+
+    for (const field in this.constraintRecord) {
+      if (this.constraintRecord[field]?.sortable) {
+        selectableField[field] = true
+      }
+    }
+
+    return selectableField
+  }
+
+  private getSelectedFieldsObject(selectedFieldsTerm: string) {
+    const defaultSelectCriterias = this.getDefaultSelectCriterias()
+
     const fieldsObject = decodeURIComponent(selectedFieldsTerm)
       .split(',')
       .reduce((result, field) => {
-        if (selectableFields[field]) {
+        if (this.constraintRecord[field]?.selectable) {
           result[field] = true
         }
 
@@ -32,13 +46,9 @@ export class SelectPrismaHandler<T extends object, D> extends DataManipulationHa
   }
 
   doHandle(request: Request, queryArgs: T): boolean {
-    const selectedFieldsTerm = (request.query.fields as string) || ''
+    const selectedFieldsTerm = (request.query[FIELDS] as string) || ''
 
-    const selectableFieldsObjectResult = this.getSelectedFieldsObject<D>(
-      selectedFieldsTerm,
-      this.selectableFields,
-      this.selectableFields,
-    )
+    const selectableFieldsObjectResult = this.getSelectedFieldsObject(selectedFieldsTerm)
 
     queryArgs['select'] = selectableFieldsObjectResult
 

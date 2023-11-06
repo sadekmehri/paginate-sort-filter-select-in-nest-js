@@ -1,18 +1,21 @@
-import { DataManipulationHandler } from 'common/classes/data-manipulation-handler'
+import { SORT_BY } from 'common/constants/request-query-params'
+import { FilterConstraintsRecord } from 'common/types'
 import { Request } from 'express'
+import { DataManipulationHandler } from './data-manipulation-handler'
 
 export class SortPrismaHandler<T extends object, D> extends DataManipulationHandler<T> {
-  private readonly sortableFields: D
+  private readonly constraintRecord: FilterConstraintsRecord<D>
 
-  constructor(sortableFields: D, next: DataManipulationHandler<T>) {
+  constructor(constraintRecord: FilterConstraintsRecord<D>, next: DataManipulationHandler<T>) {
     super(next)
-    this.sortableFields = sortableFields
+    this.constraintRecord = constraintRecord
   }
 
   private getSortByCriterias(sortBy: string) {
     const defaultSortByCriterias = [{ id: 'desc' }]
 
     const sortByCriterias = decodeURIComponent(sortBy)
+      .replace(/ /g, '+')
       .split(',')
       .map((sort) => {
         const isDescendingOrder = sort.startsWith('-')
@@ -22,7 +25,7 @@ export class SortPrismaHandler<T extends object, D> extends DataManipulationHand
         const startSlice = isInvalidSortPrefix ? 0 : 1
         const field = sort.slice(startSlice, sort.length) as keyof D
 
-        if (!this.sortableFields[field]) return null
+        if (!this.constraintRecord[field]?.sortable) return null
 
         const sortObject = {
           [field]: sortOrder,
@@ -36,7 +39,7 @@ export class SortPrismaHandler<T extends object, D> extends DataManipulationHand
   }
 
   doHandle(request: Request, queryArgs: T): boolean {
-    const sortByTerm = (request.query.sort_by as string) || ''
+    const sortByTerm = (request.query[SORT_BY] as string) || ''
 
     const sortByCriterias = this.getSortByCriterias(sortByTerm)
     queryArgs['orderBy'] = sortByCriterias
