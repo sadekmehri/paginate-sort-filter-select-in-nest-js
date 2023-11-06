@@ -6,8 +6,8 @@ import {
 } from 'common/constants/pagination-params'
 import { BadRequestException } from '@nestjs/common'
 
-export class PaginatePrismaHandler<D extends object> extends DataManipulationHandler<D> {
-  constructor(next: DataManipulationHandler<D>) {
+export class PaginatePrismaHandler<T extends object> extends DataManipulationHandler<T> {
+  constructor(next: DataManipulationHandler<T>) {
     super(next)
   }
 
@@ -36,7 +36,7 @@ export class PaginatePrismaHandler<D extends object> extends DataManipulationHan
     return { page, limit }
   }
 
-  doHandle(request: Request, queryArgs: D): boolean {
+  doHandle(request: Request, queryArgs: T): boolean {
     const { page, limit } = this.extractAndValidatePaginationParams(request)
 
     const paginationParams = {
