@@ -36,9 +36,9 @@ export class SortPrismaHandler<T extends object, D> extends DataManipulationHand
   }
 
   doHandle(request: Request, queryArgs: T): boolean {
-    const sortBy = (request.query.orderBy as string) || ''
+    const sortByTerm = (request.query.sort_by as string) || ''
 
-    const sortByCriterias = this.getSortByCriterias(sortBy)
+    const sortByCriterias = this.getSortByCriterias(sortByTerm)
     queryArgs['orderBy'] = sortByCriterias
 
     // I return false to indicate that the next handler should be called
